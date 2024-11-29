@@ -1,7 +1,12 @@
 package donations.donations1.dtos;
 
-public class PaymentfailedException extends RuntimeException {
-    public PaymentfailedException(String message) {
-        super(message);
+
+public class PaymentFailedException extends Exception {
+
+    @Override
+    public String getMessage() {
+        return "Payment Failed try again!";
+
     }
+
 }

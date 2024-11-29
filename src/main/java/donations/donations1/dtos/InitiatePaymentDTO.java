@@ -1,4 +1,9 @@
 package donations.donations1.dtos;
 
-public class InitiatePaymentDTO {
+
+public record InitiatePaymentDTO(
+        Double amount,
+        String currencyCode
+) {
+
 }
