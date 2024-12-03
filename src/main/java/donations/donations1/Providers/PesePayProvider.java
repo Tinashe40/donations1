@@ -1,5 +1,8 @@
 package donations.donations1.Providers;
 
+import donations.donations1.features.payments.Payment;
+import donations.donations1.features.payments.PaymentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import com.codevirtus.Pesepay;
@@ -10,6 +13,8 @@ import donations.donations1.dtos.InitiatePaymentDTO;
 import donations.donations1.dtos.MakePaymentResult;
 import donations.donations1.dtos.PaymentFailedException;
 
+import java.util.UUID;
+
 @Component
 public class PesePayProvider {
 
@@ -19,13 +24,20 @@ public class PesePayProvider {
     @Value("${pesepay.encryptionKey}")
     private String encryptionKey;
 
+    @Autowired
+    private PaymentRepository paymentRepository;
+
     public MakePaymentResult makePayment(InitiatePaymentDTO paymentRequest) throws PaymentFailedException {
 
         Pesepay pesepay = new Pesepay(intergrationKey, encryptionKey);
+        Payment payment = new Payment();
+
+        payment.setUuid(UUID.randomUUID().toString());
+
 
         // Set result and return URLs
         String resultUrl = "http://localhost:5173/result";
-        String returnUrl = "http://localhost:5173/return?paymentId=23";
+        String returnUrl = "http://localhost:5173/return?paymentId=" + payment.getUuid();
 
         pesepay.setResultUrl(resultUrl);
         pesepay.setReturnUrl(returnUrl);
@@ -39,7 +51,8 @@ public class PesePayProvider {
         Response res = pesepay.initiateTransaction(transaction);
 
         if (res.isSuccess()) {
-            return new MakePaymentResult(res, paymentRequest.amount(), paymentRequest.currencyCode(), resultUrl, returnUrl);
+            payment.setReferenceNumber(res.getReferenceNumber());
+            return new MakePaymentResult(res, paymentRequest.amount(), paymentRequest.currencyCode(), resultUrl, returnUrl, paymentRepository.save(payment));
         } else {
             throw new PaymentFailedException();
         }

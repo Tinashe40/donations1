@@ -1,6 +1,7 @@
 package donations.donations1.features.donations;
 
 import donations.donations1.dtos.CheckPaymentStatusDTO;
+import donations.donations1.features.payments.Payment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,7 @@ public class DonationService {
         donation.setAmount(initiatePaymentDTO.amount());
         donation.setReferenceNumber(result.getReference());
         donation.setStatus("Pending");
+        donation.setPayment(result.getPaymentIntent());
 
 
         donationRepository.save(donation); // Save to database
@@ -48,6 +50,8 @@ public class DonationService {
     }
 
 
-
+    public Optional<Donation> getDonationByPayment(Payment payment) {
+        return  donationRepository.findByPayment(payment);
+    }
 }
 

@@ -48,4 +48,15 @@ public class PaymentController {
 
         return ResponseEntity.ok(paymentStatus);
     }
+
+    @GetMapping("/check-payment")
+    public ResponseEntity<CheckPaymentStatusDTO> getPaymentStatusWithPaymentId(@RequestParam String paymentId) {
+        Optional<CheckPaymentStatusDTO> dtoOptional = paymentService.checkPaymentStatusWithPaymentId(paymentId);
+
+        if (dtoOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(dtoOptional.get());
+    }
 }

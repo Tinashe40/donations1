@@ -14,9 +14,11 @@ public class CheckPaymentStatusDTO {
     private String currencyCode;
 
 
+
     public CheckPaymentStatusDTO(Response res) {
         this.status = res.getTransactionStatus();
         this.reference = res.getReferenceNumber();
         this.pollUrl = res.getPollUrl();
+
     }
 }

@@ -18,6 +18,9 @@ public class PaymentService {
     private DonationService donationService;
 
     @Autowired
+    private PaymentRepository paymentRepository;
+
+    @Autowired
     private PesePayProvider pesePayProvider;
 
     public Optional<CheckPaymentStatusDTO> checkPaymentStatus(String referenceNumber) {
@@ -29,6 +32,31 @@ public class PaymentService {
         }
 
         Donation donation = donationOptional.get();
+
+        paymentStatus.setAmount(donation.getAmount());
+        paymentStatus.setCurrencyCode(donation.getCurrencyCode());
+
+        return Optional.of(paymentStatus);
+
+    }
+
+    public Optional<CheckPaymentStatusDTO> checkPaymentStatusWithPaymentId(String paymentID) {
+
+        Optional<Payment> paymentOptional = paymentRepository.findById(paymentID);
+
+        if (paymentOptional.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Payment payment = paymentOptional.get();
+        CheckPaymentStatusDTO paymentStatus = pesePayProvider.getPaymentStatus(payment.getReferenceNumber());
+        Optional<Donation> donationOptional = donationService.getDonationByReferenceNumber(payment.getReferenceNumber());
+
+        if (donationOptional.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Donation donation  = donationOptional.get();
 
         paymentStatus.setAmount(donation.getAmount());
         paymentStatus.setCurrencyCode(donation.getCurrencyCode());

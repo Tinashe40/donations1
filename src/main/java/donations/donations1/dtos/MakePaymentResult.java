@@ -1,6 +1,7 @@
 package donations.donations1.dtos;
 
 import com.codevirtus.response.Response;
+import donations.donations1.features.payments.Payment;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,8 @@ public class MakePaymentResult {
     private String currencyCode;
     private String returnUrl;
     private String resultUrl;
+    private Payment paymentIntent;
+
 
     public MakePaymentResult(Response response) {
         this.status = response.getTransactionStatus();
@@ -28,7 +31,7 @@ public class MakePaymentResult {
         this.message = response.getMessage();
     }
 
-    public MakePaymentResult(Response response, Double amount, String currencyCode, String resultUrl, String returnUrl) {
+    public MakePaymentResult(Response response, Double amount, String currencyCode, String resultUrl, String returnUrl, Payment payment) {
         this.amount = amount;
         this.currencyCode = currencyCode;
         this.status = response.getTransactionStatus();
@@ -38,5 +41,6 @@ public class MakePaymentResult {
         this.message = response.getMessage();
         this.resultUrl = resultUrl;
         this.returnUrl = returnUrl;
+        this.paymentIntent = payment;
     }
 }
