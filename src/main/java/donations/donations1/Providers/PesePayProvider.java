@@ -1,19 +1,21 @@
 package donations.donations1.Providers;
 
-import donations.donations1.features.payments.Payment;
-import donations.donations1.features.payments.PaymentRepository;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.codevirtus.Pesepay;
 import com.codevirtus.payments.Transaction;
 import com.codevirtus.response.Response;
+
 import donations.donations1.dtos.CheckPaymentStatusDTO;
 import donations.donations1.dtos.InitiatePaymentDTO;
 import donations.donations1.dtos.MakePaymentResult;
 import donations.donations1.dtos.PaymentFailedException;
-
-import java.util.UUID;
+import donations.donations1.features.payments.Payment;
+import donations.donations1.features.payments.PaymentRepository;
 
 @Component
 public class PesePayProvider {
@@ -36,8 +38,8 @@ public class PesePayProvider {
 
 
         // Set result and return URLs
-        String resultUrl = "http://localhost:5173/result";
-        String returnUrl = "http://localhost:5173/return?paymentId=" + payment.getUuid();
+        String resultUrl = "http://localhost:8081/result";
+        String returnUrl = "http://localhost:8081/return?paymentId=" + payment.getUuid();
 
         pesepay.setResultUrl(resultUrl);
         pesepay.setReturnUrl(returnUrl);
